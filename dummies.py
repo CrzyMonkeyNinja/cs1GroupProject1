@@ -16,7 +16,7 @@ from random import randint
 #
 # For example, the tuple (7,1) would represent the cat at x-coord,
 # 7, and moving to the right by 1 pixel per "clock tick."
-# 
+#
 # The initial state of the cat in this program is (0,1), meaning that the cat
 # starts at the left of the screen and moves right one pixel per tick.
 #
@@ -47,8 +47,6 @@ leftTorso = dw.loadImage("T_L.png")
 leftHigh = dw.loadImage("L_H.png")  # 200, +225
 leftLow = dw.loadImage("L_L.png")  # 200, -100
 
-rightArm = (rightHigh, - 100)
-leftArm = (leftLow, 225)
 
 # state -> image (IO)
 # draw the cat halfway up the screen (height/2) and at the x
@@ -57,10 +55,18 @@ leftArm = (leftLow, 225)
 
 def updateDisplay(state):
     dw.fill(dw.black)
-    dw.draw(rightArm[0], (state[2] - 150, state[3] + rightArm[1]))
-    dw.draw(leftArm[0], (state[0] + 200, state[1] + leftArm[1]))
+    if (state[4] == 1):
+        dw.draw(leftHigh,(state [0] + 200, state[1] - 100))
+    else:
+        dw.draw(leftLow, (state[0] + 200, state[1] + 225))
+    if (state[5] == 1):
+        dw.draw(rightHigh, (state[2] - 150, state[3] - 100))
+    else:
+        dw.draw(rightLow, (state[2] - 150, state[3] + 225))
+
     dw.draw(rightTorso, (state[2], state[3]))
     dw.draw(leftTorso, (state[0], state[1]))
+
 
 
 ################################################################
@@ -72,7 +78,7 @@ def updateDisplay(state):
 #
 # state -> state
 def updateState(state):
-    return((state[0] + 1, state[1] + 1, state[2] - 1, state[3] - 1))
+    return((state[0], state[1], state[2], state[3], state[4], state[5]))
 
 ################################################################
 
@@ -82,12 +88,12 @@ def updateState(state):
 
 
 def endState(state):
-    leftWid = state[0] - 150
+    leftWid = state[0] + 150
     leftHi = state[1] + 225
-    rightWid = state[2] - 150
+    rightWid = state[2] + 150
     rightHi = state[3] + 225
 
-    if ((leftWid > width or leftWid < 0) or (leftHi > width or leftHi < 0)) or ((rightWid > height or rightWid < 0) or (rightHi > height or rightHi < 0)):
+    if ((leftWid > width or leftWid < 0) or (leftHi > height or leftHi < 0)) or ((rightWid > width or rightWid < 0) or (rightHi > height or rightHi < 0)):
         return True
     else:
         return False
@@ -106,16 +112,47 @@ def endState(state):
 #
 # state -> event -> state
 #
-def handleEvent(state, event):  
-#    print("Handling event: " + str(event))
-        return(state)
+def handleEvent(state, event):
+#        print("Handling event: " + str(event))
+    state0mod = 0
+    state1mod = 0
+    state2mod = 0
+    state3mod = 0
+
+    state4 = state [4]
+    state5 = state [5]
+
+    if (event.type == pg.KEYDOWN):
+        if (event.key == 119):
+            state1mod -= 10
+        if (event.key == 97):
+            state0mod -= 10
+        if (event.key == 115):
+            state1mod += 10
+        if (event.key == 100):
+            state0mod += 10
+        if (event.key == 106):
+            state2mod -= 10
+        if (event.key == 105):
+            state3mod -= 10
+        if (event.key == 107):
+            state3mod += 10
+        if (event.key == 108):
+            state2mod += 10
+
+        if(event.key == 99 or event.key == 120):
+            state4 = (1 + state[4]) % 2
+        if(event.key == 44 or event.key == 46):
+            state5 = (1 + state[5]) % 2
+
+    return(state[0] + state0mod, state[1] + state1mod, state[2] + state2mod, state[3] + state3mod, state4, state5)
 
 ################################################################
 
 # World state will be single x coordinate at left edge of world
 
-# The cat starts at the left, moving right 
-initState = (randint(350, 550), randint(11, 277), randint(750, 950), randint(11, 277))
+# The cat starts at the left, moving right
+initState = (randint(350, 550), randint(11, 277), randint(750, 950), randint(11, 277), randint (0, 1), randint (0, 1))
 
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
