@@ -88,16 +88,26 @@ def updateState(state):
 
 
 def endState(state):
+
+    result = False
+
     leftWid = state[0] + 150
     leftHi = state[1] + 225
     rightWid = state[2] + 150
     rightHi = state[3] + 225
 
-    if ((leftWid > width or leftWid < 0) or (leftHi > height or leftHi < 0)) or ((rightWid > width or rightWid < 0) or (rightHi > height or rightHi < 0)):
-        return True
-    else:
-        return False
+    if (leftWid > width or leftWid < 0) or (leftHi > height or leftHi < 0):
+        result = True
+        print("Player 2 Wins! (That's the guy on the right)")
 
+    elif (rightWid > width or rightWid < 0) or (rightHi > height or rightHi < 0):
+        result = True
+        print("Player 1 Wins! (That's the guy on the left)")
+
+    else:
+        result = False
+
+    return result
 
 ################################################################
 
@@ -152,7 +162,7 @@ def handleEvent(state, event):
 # World state will be single x coordinate at left edge of world
 
 # The cat starts at the left, moving right
-initState = (randint(350, 550), randint(11, 277), randint(750, 950), randint(11, 277), randint (0, 1), randint (0, 1))
+initState = (100, 175, 900, 175, randint(0, 1), randint(0, 1))
 
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
