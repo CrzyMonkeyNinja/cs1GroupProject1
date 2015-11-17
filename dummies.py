@@ -78,7 +78,8 @@ def updateDisplay(state):
 #
 # state -> state
 def updateState(state):
-    return((state[0], state[1], state[2], state[3], state[4], state[5]))
+    print("frame", state[7])
+    return(state[0], state[1], state[2], state[3], state[4], state[5], state[6] - 1, state[7] - 1)
 
 ################################################################
 
@@ -132,6 +133,9 @@ def handleEvent(state, event):
     state4 = state [4]
     state5 = state [5]
 
+    state6mod = 0
+    state7mod = 0
+
     if (event.type == pg.KEYDOWN):
         if (event.key == 119):
             state1mod -= 10
@@ -150,24 +154,26 @@ def handleEvent(state, event):
         if (event.key == 108):
             state2mod += 10
 
-        if(event.key == 99 or event.key == 120):
+        if(event.key == 99 or event.key == 120) and (state[6] < 0):
             state4 = (1 + state[4]) % 2
+            state6mod += 30
             if(0<=(state[2]-state[0])<=400) and (abs(state[3]-state[1])<=300):
-                state2mod += 50
+                state2mod += 75
 
-        if(event.key == 44 or event.key == 46):
+        if(event.key == 44 or event.key == 46) and (state[7] < 0):
             state5 = (1 + state[5]) % 2
+            state7mod += 30
             if(0<=(state[2]-state[0])<=400) and (abs(state[3]-state[1])<=300):
-                state0mod -= 50
+                state0mod -= 75
 
-    return(state[0] + state0mod, state[1] + state1mod, state[2] + state2mod, state[3] + state3mod, state4, state5)
+    return(state[0] + state0mod, state[1] + state1mod, state[2] + state2mod, state[3] + state3mod, state4, state5, state[6] + state6mod, state[7] + state7mod)
 
 ################################################################
 
 # World state will be single x coordinate at left edge of world
 
 # The cat starts at the left, moving right
-initState = (100, 175, 900, 175, randint(0, 1), randint(0, 1))
+initState = (100, 175, 900, 175, randint(0, 1), randint(0, 1), 120, 120)
 
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
