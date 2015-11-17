@@ -31,7 +31,7 @@ from random import randint
 ################################################################
 
 # Initialize world
-name = "Cat Fun. Press the mouse (but not too fast)!"
+name = "SMACK"
 width = 1200
 height = 800
 rw.newDisplay(width, height, name)
@@ -152,8 +152,13 @@ def handleEvent(state, event):
 
         if(event.key == 99 or event.key == 120):
             state4 = (1 + state[4]) % 2
+            if(0<=(state[2]-state[0])<=400) and (abs(state[3]-state[1])<=300):
+                state2mod += 50
+
         if(event.key == 44 or event.key == 46):
             state5 = (1 + state[5]) % 2
+            if(0<=(state[2]-state[0])<=400) and (abs(state[3]-state[1])<=300):
+                state0mod -= 50
 
     return(state[0] + state0mod, state[1] + state1mod, state[2] + state2mod, state[3] + state3mod, state4, state5)
 
