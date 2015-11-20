@@ -11,12 +11,20 @@ from random import randint
 #
 # The state of the torso is represented by a tuple (x position, y
 # position, state of arm, for both players).
-#ddc
+#
 # A slap initiated outside of a certain region will have no affect on
 # the other character's location, but the arm will still swing.
 #
 # The simulation ends when either player leaves the "ring" by fleeing
 # or by being pushed out by the other player's slaps. 
+#
+# HAC LVDVM FACTVM ANNO MMXV MANV WAEATUM AMICORUMQUE
+#
+# Made by Team Wyatt and Friends in November of 2015.
+#
+# Team Wyatt and Friends is comprised of Matthew Boustany, Catherine
+# Jin, and Simon Whittle.
+#
 
 ################################################################
 
@@ -40,7 +48,7 @@ leftLow = dw.loadImage("L_L.png")  # 200, -100
 def updateDisplay(state):
     dw.fill(dw.black)
     if (state[4] == 1):
-        dw.draw(leftHigh,(state [0] + 200, state[1] - 100))
+        dw.draw(leftHigh, (state [0] + 200, state[1] - 100))
     else:
         dw.draw(leftLow, (state[0] + 200, state[1] + 225))
     if (state[5] == 1):
@@ -49,22 +57,22 @@ def updateDisplay(state):
         dw.draw(rightLow, (state[2] - 150, state[3] + 225))
 
     if (state[6]>=0):
-        slapNumberLeft="0"
+        slapNumberLeft = "0"
     else:
-        slapNumberLeft=str(-state[6]//30)
+        slapNumberLeft = str(-state[6]//60)
 
     if (state[7]>=0):
-        slapNumberRight="0"
+        slapNumberRight = "0"
     else:
-        slapNumberRight=str(-state[7]//30)
-        
-    slapCounterLeft=dw.makeLabel(slapNumberLeft,"Times New Roman, Ariel", 72, dw.white)
-    slapCounterRight=dw.makeLabel(slapNumberRight,"Times New Roman, Ariel", 72, dw.white)
+        slapNumberRight = str(-state[7]//60)
+
+    slapCounterLeft = dw.makeLabel(slapNumberLeft, "Times New Roman, Ariel", 72, dw.white)
+    slapCounterRight = dw.makeLabel(slapNumberRight, "Times New Roman, Ariel", 72, dw.white)
 
     dw.draw(rightTorso, (state[2], state[3]))
     dw.draw(leftTorso, (state[0], state[1]))
     dw.draw(slapCounterLeft, (50, 650))
-    dw.draw(slapCounterRight, (1100,650))
+    dw.draw(slapCounterRight, (1100, 650))
 
 
 ################################################################
@@ -138,14 +146,14 @@ def handleEvent(state, event):
 
         if(event.key == 99 or event.key == 120) and (state[6] < 0):
             state4 = (1 + state[4]) % 2
-            state6mod += 30
-            if(0<=(state[2]-state[0])<=400) and (abs(state[3]-state[1])<=300):
+            state6mod += 60
+            if(0 <= (state[2] - state[0]) <= 400) and (abs(state[3] - state[1]) <= 300):
                 state2mod += 75
 
         if(event.key == 44 or event.key == 46) and (state[7] < 0):
             state5 = (1 + state[5]) % 2
-            state7mod += 30
-            if(0<=(state[2]-state[0])<=400) and (abs(state[3]-state[1])<=300):
+            state7mod += 60
+            if(0 <= (state[2] - state[0]) <= 400) and (abs(state[3] - state[1]) <= 300):
                 state0mod -= 75
 
     return(state[0] + state0mod, state[1] + state1mod, state[2] + state2mod, state[3] + state3mod, state4, state5, state[6] + state6mod, state[7] + state7mod)
