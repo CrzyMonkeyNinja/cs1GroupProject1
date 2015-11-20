@@ -11,7 +11,7 @@ from random import randint
 #
 # The state of the torso is represented by a tuple (x position, y
 # position, state of arm, for both players).
-#
+#ddc
 # A slap initiated outside of a certain region will have no affect on
 # the other character's location, but the arm will still swing.
 #
@@ -37,7 +37,6 @@ leftTorso = dw.loadImage("T_L.png")
 leftHigh = dw.loadImage("L_H.png")  # 200, +225
 leftLow = dw.loadImage("L_L.png")  # 200, -100
 
-
 def updateDisplay(state):
     dw.fill(dw.black)
     if (state[4] == 1):
@@ -49,15 +48,28 @@ def updateDisplay(state):
     else:
         dw.draw(rightLow, (state[2] - 150, state[3] + 225))
 
+    if (state[6]>=0):
+        slapNumberLeft="0"
+    else:
+        slapNumberLeft=str(-state[6]//30)
+
+    if (state[7]>=0):
+        slapNumberRight="0"
+    else:
+        slapNumberRight=str(-state[7]//30)
+        
+    slapCounterLeft=dw.makeLabel(slapNumberLeft,"Times New Roman, Ariel", 72, dw.white)
+    slapCounterRight=dw.makeLabel(slapNumberRight,"Times New Roman, Ariel", 72, dw.white)
+
     dw.draw(rightTorso, (state[2], state[3]))
     dw.draw(leftTorso, (state[0], state[1]))
-
+    dw.draw(slapCounterLeft, (50, 650))
+    dw.draw(slapCounterRight, (1100,650))
 
 
 ################################################################
 # state -> state
 def updateState(state):
-    print("frame", state[7])
     return(state[0], state[1], state[2], state[3], state[4], state[5], state[6] - 1, state[7] - 1)
 
 ################################################################
@@ -140,7 +152,7 @@ def handleEvent(state, event):
 
 ################################################################
 
-initState = (100, 175, 900, 175, randint(0, 1), randint(0, 1), 120, 120)
+initState = (100, 175, 900, 175, randint(0, 1), randint(0, 1), -120, -120)
 
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
