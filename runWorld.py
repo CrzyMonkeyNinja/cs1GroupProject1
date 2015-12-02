@@ -44,4 +44,3 @@ def runWorld(initState, updateDisplay, updateState, handleEvent,
             else:
                 currentState = handleEvent(currentState, event)
     pg.quit()
-
