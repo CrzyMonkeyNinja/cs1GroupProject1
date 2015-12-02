@@ -39,30 +39,30 @@ leftLow = dw.loadImage("L_L.png")  # 200, -100
 
 def updateDisplay(state):
     dw.fill(dw.black)
-    if (state[4] == 1):
-        dw.draw(leftHigh,(state [0] + 200, state[1] - 100))
+    if (state.player1arm == 1):
+        dw.draw(leftHigh,(state.player1x + 200, state.player1y - 100))
     else:
-        dw.draw(leftLow, (state[0] + 200, state[1] + 225))
-    if (state[5] == 1):
-        dw.draw(rightHigh, (state[2] - 150, state[3] - 100))
+        dw.draw(leftLow, (state.player1x + 200, state.player1y + 225))
+    if (state.player2arm == 1):
+        dw.draw(rightHigh, (state.player2x - 150, state.player2y - 100))
     else:
-        dw.draw(rightLow, (state[2] - 150, state[3] + 225))
+        dw.draw(rightLow, (state.player2x - 150, state.player2y + 225))
 
-    if (state[6]>=0):
+    if (state.player1slaps>=0):
         slapNumberLeft="0"
     else:
-        slapNumberLeft=str(-state[6]//30)
+        slapNumberLeft=str(-state.player1slaps//30)
 
-    if (state[7]>=0):
+    if (state.player2slaps>=0):
         slapNumberRight="0"
     else:
-        slapNumberRight=str(-state[7]//30)
+        slapNumberRight=str(-state.player2slaps//30)
         
     slapCounterLeft=dw.makeLabel(slapNumberLeft,"Times New Roman, Ariel", 72, dw.white)
     slapCounterRight=dw.makeLabel(slapNumberRight,"Times New Roman, Ariel", 72, dw.white)
 
-    dw.draw(rightTorso, (state[2], state[3]))
-    dw.draw(leftTorso, (state[0], state[1]))
+    dw.draw(rightTorso, (state.player2x, state.player2y))
+    dw.draw(leftTorso, (state.player1x, state.player1y))
     dw.draw(slapCounterLeft, (50, 650))
     dw.draw(slapCounterRight, (1100,650))
 
@@ -70,7 +70,9 @@ def updateDisplay(state):
 ################################################################
 # state -> state
 def updateState(state):
-    return(state[0], state[1], state[2], state[3], state[4], state[5], state[6] - 1, state[7] - 1)
+    state.player1slaps -= 1
+    state.player2slaps -= 1
+    return state
 
 ################################################################
 
@@ -83,10 +85,10 @@ def endState(state):
 
     result = False
 
-    leftWid = state[0] + 150
-    leftHi = state[1] + 225
-    rightWid = state[2] + 150
-    rightHi = state[3] + 225
+    leftWid = state.player1x + 150
+    leftHi = state.player1y + 225
+    rightWid = state.player2x + 150
+    rightHi = state.player2y + 225
 
     if (leftWid > width or leftWid < 0) or (leftHi > height or leftHi < 0):
         result = True
@@ -107,52 +109,52 @@ def endState(state):
 #
 def handleEvent(state, event):
 #        print("Handling event: " + str(event))
-    state0mod = 0
-    state1mod = 0
-    state2mod = 0
-    state3mod = 0
-
-    state4 = state [4]
-    state5 = state [5]
-
-    state6mod = 0
-    state7mod = 0
 
     if (event.type == pg.KEYDOWN):
         if (event.key == 119):
-            state1mod -= 10
+            state.player1y -= 10
         if (event.key == 97):
-            state0mod -= 10
+            state.player1x -= 10
         if (event.key == 115):
-            state1mod += 10
+            state.player1y += 10
         if (event.key == 100):
-            state0mod += 10
+            state.player1x += 10
         if (event.key == 106):
-            state2mod -= 10
+            state.player2x -= 10
         if (event.key == 105):
-            state3mod -= 10
+            state.player2y -= 10
         if (event.key == 107):
-            state3mod += 10
+            state.player2y += 10
         if (event.key == 108):
-            state2mod += 10
+            state.player2x += 10
 
-        if(event.key == 99 or event.key == 120) and (state[6] < 0):
-            state4 = (1 + state[4]) % 2
-            state6mod += 30
-            if(0<=(state[2]-state[0])<=400) and (abs(state[3]-state[1])<=300):
-                state2mod += 75
+        if(event.key == 99 or event.key == 120) and (state.player1slaps < 0):
+            state.player1arm = (1 + state.player1arm) % 2
+            state.player1slaps += 30
+            if(0<=(state.player2x-state.player1x)<=400) and (abs(state.player2y-state.player1y)<=300):
+                state.player2x += 75
 
-        if(event.key == 44 or event.key == 46) and (state[7] < 0):
-            state5 = (1 + state[5]) % 2
-            state7mod += 30
-            if(0<=(state[2]-state[0])<=400) and (abs(state[3]-state[1])<=300):
-                state0mod -= 75
+        if(event.key == 44 or event.key == 46) and (state.player2slaps < 0):
+            state.player2arm = (1 + state.player2arm) % 2
+            state.player2slaps += 30
+            if(0<=(state.player2x-state.player1x)<=400) and (abs(state.player2y-state.player1y)<=300):
+                state.player1x -= 75
 
-    return(state[0] + state0mod, state[1] + state1mod, state[2] + state2mod, state[3] + state3mod, state4, state5, state[6] + state6mod, state[7] + state7mod)
+    return(state)
 
 ################################################################
-
-initState = (100, 175, 900, 175, randint(0, 1), randint(0, 1), -120, -120)
+class State(object):
+    def __init__(self):
+        self.player1x = 100
+        self.player1y = 175
+        self.player2x = 900
+        self.player2y = 175
+        self.player1arm = randint(0, 1)
+        self.player2arm = randint(0, 1)
+        self.player1slaps = -120
+        self.player2slaps = -120
+    
+initState = State()
 
 # Run the simulation no faster than 60 frames per second
 frameRate = 60
